@@ -12,7 +12,6 @@
     <groupId>art.aelaort</groupId>
     <artifactId>ae-qbit-manager-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ae-qbit-manager-bot</name>
 
     <properties>
         <java.version>17</java.version>
@@ -27,7 +26,17 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>art.aelaort</groupId>
+            <artifactId>aelaort-telegrambots</artifactId>
+            <version>7.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -40,7 +49,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>main.Main</mainClass>
+                            <mainClass>art.aelaort.AeQbitManagerBotApplication</mainClass>
                             <classpathPrefix>dependency/</classpathPrefix>
                         </manifest>
                     </archive>
@@ -64,7 +73,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>main.Main</mainClass>
+                    <mainClass>art.aelaort.AeQbitManagerBotApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
