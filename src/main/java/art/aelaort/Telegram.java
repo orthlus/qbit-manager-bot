@@ -57,23 +57,27 @@ public class Telegram implements SpringAdminBot {
 	}
 
 	private void handleCommand(String messageText) {
-		switch (commandsMap.get(messageText)) {
+		handleCommand(commandsMap.get(messageText));
+	}
+
+	private void handleCommand(Commands command) {
+		switch (command) {
 			case START -> send("команды:\n" + String.join("\n", commandsMap.keySet()));
-			case GET_LIMIT -> {
-				long limitInMB = qBitTorrentClient.getUploadLimitInMB();
-				send("current limit %d MB/sec".formatted(limitInMB));
-			}
+			case GET_LIMIT -> send(qBitTorrentClient.getUploadLimitString());
 			case DELETE_LIMIT -> {
 				qBitTorrentClient.deleteUploadLimit();
 				send("ok");
+				handleCommand(Commands.GET_LIMIT);
 			}
 			case SET_LIMIT_TO_1_MB -> {
 				qBitTorrentClient.setUploadLimitInMB(1);
 				send("limit set to 1 MB/sec");
+				handleCommand(Commands.GET_LIMIT);
 			}
 			case SET_LIMIT_TO_8_MB -> {
 				qBitTorrentClient.setUploadLimitInMB(8);
 				send("limit set to 8 MB/sec");
+				handleCommand(Commands.GET_LIMIT);
 			}
 		}
 	}

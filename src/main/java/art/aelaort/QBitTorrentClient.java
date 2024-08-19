@@ -10,6 +10,13 @@ import org.springframework.web.client.RestTemplate;
 public class QBitTorrentClient {
 	private final RestTemplate restTemplate;
 
+	public String getUploadLimitString() {
+		long limitInMB = getUploadLimitInMB();
+		return limitInMB == 0 ?
+				"current - no limit" :
+				"current limit %d MB/sec".formatted(limitInMB);
+	}
+
 	public long getUploadLimitInMB() {
 		return getUploadLimitInBytes() / 1024 / 1024;
 	}
