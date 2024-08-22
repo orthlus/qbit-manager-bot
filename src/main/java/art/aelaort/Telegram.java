@@ -31,8 +31,8 @@ public class Telegram implements SpringAdminBot {
 	private enum Commands implements Command {
 		START("/start"),
 		GET_LIMIT("/get_limit"),
-		SET_LIMIT_TO_1_MB("/set_limit_to_1_mbit"),
-		SET_LIMIT_TO_8_MB("/set_limit_to_8_mbit"),
+		SET_LIMIT_TO_1_MB("/set_limit_to_1_mb"),
+		SET_LIMIT_TO_8_MB("/set_limit_to_8_mb"),
 		DELETE_LIMIT("/delete_limit");
 		final String command;
 	}
