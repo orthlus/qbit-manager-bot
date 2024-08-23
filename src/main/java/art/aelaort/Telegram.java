@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static art.aelaort.TelegramClientHelpers.execute;
@@ -16,6 +17,7 @@ import static art.aelaort.TelegramClientHelpers.execute;
 @Component
 @RequiredArgsConstructor
 public class Telegram implements SpringAdminBot {
+	private final SchedulerLimitStore schedulerLimitStore;
 	@Getter
 	@Value("${telegram.bot.token}")
 	private String botToken;
@@ -32,8 +34,10 @@ public class Telegram implements SpringAdminBot {
 		START("/start"),
 		GET_LIMIT("/get_limit"),
 		SET_LIMIT_TO_1_MB("/set_limit_to_1_mb"),
+		SET_LIMIT_TO_1_MB_FOR_HOUR("/set_limit_to_1_mb_for_hour"),
 		SET_LIMIT_TO_8_MB("/set_limit_to_8_mb"),
-		DELETE_LIMIT("/delete_limit");
+		DELETE_LIMIT("/delete_limit"),
+		DELETE_LIMIT_FOR_HOUR("/delete_limit_for_hour");
 		final String command;
 	}
 
@@ -66,7 +70,7 @@ public class Telegram implements SpringAdminBot {
 			case GET_LIMIT -> send(qBitTorrentClient.getUploadLimitString());
 			case DELETE_LIMIT -> {
 				qBitTorrentClient.deleteUploadLimit();
-				send("ok");
+				send("limit deleted");
 				handleCommand(Commands.GET_LIMIT);
 			}
 			case SET_LIMIT_TO_1_MB -> {
@@ -79,7 +83,21 @@ public class Telegram implements SpringAdminBot {
 				send("limit set to 8 MB/sec");
 				handleCommand(Commands.GET_LIMIT);
 			}
+			case SET_LIMIT_TO_1_MB_FOR_HOUR -> {
+				saveCurrentLimit();
+				handleCommand(Commands.SET_LIMIT_TO_1_MB);
+			}
+			case DELETE_LIMIT_FOR_HOUR -> {
+				saveCurrentLimit();
+				handleCommand(Commands.DELETE_LIMIT);
+			}
 		}
+	}
+
+	private void saveCurrentLimit() {
+		schedulerLimitStore.currentUploadLimitInBytes(qBitTorrentClient.getUploadLimitInBytes());
+		schedulerLimitStore.isWait(true);
+		schedulerLimitStore.whenUndoLimit(LocalDateTime.now().plusHours(1));
 	}
 
 	private void send(String text) {
