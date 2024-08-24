@@ -13,6 +13,13 @@ public class SchedulerLimitStore {
 	private final AtomicBoolean isWait = new AtomicBoolean(false);
 	private final AtomicReference<LocalDateTime> whenUndoLimit = new AtomicReference<>();
 
+	public void print(String name) {
+		System.out.println("\nstart " + name);
+		System.out.printf("currentUploadLimitInBytes: %s%n", currentUploadLimitInBytes.get());
+		System.out.printf("isWait: %s%n", isWait.get());
+		System.out.printf("whenUndoLimit: %s%n", whenUndoLimit.get());
+	}
+
 	public long currentUploadLimitInBytes() {
 		return currentUploadLimitInBytes.get();
 	}

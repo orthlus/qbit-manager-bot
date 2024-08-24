@@ -100,7 +100,7 @@ public class Telegram implements SpringAdminBot {
 		schedulerLimitStore.whenUndoLimit(LocalDateTime.now().plusHours(1));
 	}
 
-	private void send(String text) {
+	public void send(String text) {
 		execute(SendMessage.builder()
 				.chatId(adminId)
 				.text(text)

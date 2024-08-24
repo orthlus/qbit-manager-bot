@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class QBitScheduler {
 	private final QBitTorrentClient qBitTorrentClient;
 	private final SchedulerLimitStore schedulerLimitStore;
+	private final Telegram telegram;
 
 	@Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
 	public void checkToUndoLimit() {
@@ -26,5 +27,6 @@ public class QBitScheduler {
 	public void setSavedLimit() {
 		long bytes = schedulerLimitStore.currentUploadLimitInBytes();
 		qBitTorrentClient.setUploadLimitInBytes(bytes);
+		telegram.send("scheduled: set limit to %d mb".formatted(qBitTorrentClient.bytes2MB(bytes)));
 	}
 }

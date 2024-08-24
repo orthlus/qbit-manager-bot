@@ -17,8 +17,12 @@ public class QBitTorrentClient {
 				"current limit %d MB/sec".formatted(limitInMB);
 	}
 
+	public long bytes2MB(long bytes) {
+		return bytes / 1024 / 1024;
+	}
+
 	public long getUploadLimitInMB() {
-		return getUploadLimitInBytes() / 1024 / 1024;
+		return bytes2MB(getUploadLimitInBytes());
 	}
 
 	public long getUploadLimitInBytes() {
