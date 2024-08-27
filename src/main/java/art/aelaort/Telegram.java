@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 
 import static art.aelaort.TelegramClientHelpers.execute;
 
@@ -58,6 +59,9 @@ public class Telegram implements SpringAdminBot {
 
 			if (commandsMap.containsKey(messageText)) {
 				handleCommand(messageText);
+				if (commandsMap.get(messageText) != Commands.START) {
+					handleCommand(Commands.START);
+				}
 			} else {
 				handleText(messageText);
 			}
@@ -119,7 +123,12 @@ public class Telegram implements SpringAdminBot {
 	public void send(String text) {
 		execute(SendMessage.builder()
 				.chatId(adminId)
-				.text(text)
+				.text(appendText(text))
 				.build(), telegramClient);
+	}
+
+	private String appendText(String text) {
+		return text;
+//		return text + "\n/start";
 	}
 }
