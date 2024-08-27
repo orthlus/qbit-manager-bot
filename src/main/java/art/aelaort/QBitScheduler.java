@@ -14,6 +14,22 @@ public class QBitScheduler {
 	private final SchedulerLimitStore schedulerLimitStore;
 	private final Telegram telegram;
 
+	@Scheduled(cron = "0 0 7 * * *")
+	public void dayLimitSetup() {
+		if (!schedulerLimitStore.isWait()) {
+			qBitTorrentClient.setUploadLimitInMB(1);
+			telegram.send("day limit setup: limit set to 1 MB/sec");
+		}
+	}
+
+	@Scheduled(cron = "0 0 2 * * *")
+	public void nightLimitSetup() {
+		if (!schedulerLimitStore.isWait()) {
+			qBitTorrentClient.setUploadLimitInMB(8);
+			telegram.send("night limit setup: limit set to 8 MB/sec");
+		}
+	}
+
 	@Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
 	public void checkToUndoLimit() {
 		if (schedulerLimitStore.isWait()) {
