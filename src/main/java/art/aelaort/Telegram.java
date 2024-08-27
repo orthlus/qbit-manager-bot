@@ -1,5 +1,6 @@
 package art.aelaort;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +38,18 @@ public class Telegram implements SpringAdminBot {
 		SET_LIMIT_TO_1_MB_FOR_HOUR("/set_limit_to_1_mb_for_hour"),
 		SET_LIMIT_TO_8_MB("/set_limit_to_8_mb"),
 		DELETE_LIMIT("/delete_limit"),
-		DELETE_LIMIT_FOR_HOUR("/delete_limit_for_hour");
+		DELETE_LIMIT_FOR_HOUR("/delete_limit_for_hour"),
+		NIGHT_SCHEDULE_DISABLE("/night_schedule_disable"),
+		NIGHT_SCHEDULE_ENABLE("/night_schedule_enable");
 		final String command;
 	}
 
 	private final Map<String, Commands> commandsMap = Command.buildMap(Commands.class);
+
+	@PostConstruct
+	private void init() {
+		send("bot started, night schedule: " + schedulerLimitStore.isNightScheduled());
+	}
 
 	@Override
 	public void consumeAdmin(Update update) {
@@ -90,6 +98,14 @@ public class Telegram implements SpringAdminBot {
 			case DELETE_LIMIT_FOR_HOUR -> {
 				saveCurrentLimit();
 				handleCommand(Commands.DELETE_LIMIT);
+			}
+			case NIGHT_SCHEDULE_DISABLE -> {
+				schedulerLimitStore.isNightScheduled(false);
+				send("night schedule disabled");
+			}
+			case NIGHT_SCHEDULE_ENABLE -> {
+				schedulerLimitStore.isNightScheduled(true);
+				send("night schedule enabled");
 			}
 		}
 	}

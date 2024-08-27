@@ -12,6 +12,15 @@ public class SchedulerLimitStore {
 	private final AtomicLong currentUploadLimitInBytes = new AtomicLong();
 	private final AtomicBoolean isWait = new AtomicBoolean(false);
 	private final AtomicReference<LocalDateTime> whenUndoLimit = new AtomicReference<>();
+	private final AtomicBoolean isNightScheduled = new AtomicBoolean(true);
+
+	public void isNightScheduled(boolean nightScheduled) {
+		isNightScheduled.set(nightScheduled);
+	}
+
+	public boolean isNightScheduled() {
+		return isNightScheduled.get();
+	}
 
 	public void print(String name) {
 		System.out.println("\nstart " + name);
