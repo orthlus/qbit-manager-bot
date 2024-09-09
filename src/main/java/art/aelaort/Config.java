@@ -1,6 +1,7 @@
 package art.aelaort;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,13 @@ public class Config {
 	}
 
 	@Bean
+	@ConfigurationProperties("telegram.list")
+	public TelegramListProperties telegramListProperties() {
+		return new TelegramListProperties();
+	}
+
+	@Bean
 	public TelegramInit telegramInit(List<SpringLongPollingBot> bots) {
-		return createTelegramInit(bots);
+		return createTelegramInit(bots, telegramListProperties());
 	}
 }
